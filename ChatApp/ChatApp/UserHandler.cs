@@ -26,6 +26,10 @@ namespace ChatApp
 
 		private Dictionary<string, Client> connections;
 
+		public Dictionary<string, IPAddress> Users { get { return users; } }
+
+		public Dictionary<string, Client> Connections { get { return connections; } }
+
 		public UserHandler()
 		{
 			users = new Dictionary<string, IPAddress>();

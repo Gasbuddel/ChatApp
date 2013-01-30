@@ -106,5 +106,15 @@ namespace ChatApp
 		{
 			userHandle.OpenConnection(lb_Clients.SelectedItem.ToString());
 		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			Message msg = new Message();
+			msg.Type = "MSG";
+			msg.Nickname = ClientInformation.Nickname;
+			msg.Status = "ONL";
+
+			userHandle.Connections[lb_Clients.SelectedItem.ToString()].SendMessage(msg);
+		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.ComponentModel;
+using System.IO;
 
 namespace ChatApp
 {
@@ -15,9 +15,17 @@ namespace ChatApp
 
 		TcpClient connection;
 
+		StreamReader reader;
+
+		StreamWriter writer;
+
 		IPAddress targetAddress;
 
+		bool connected;
+
 		string nickName;
+
+		Thread thr_ReceiveMessages;
 
 		public IPAddress TargetAddress { get { return targetAddress; } }
 		public string NickName { get { return nickName; } }
@@ -29,6 +37,10 @@ namespace ChatApp
 			this.nickName = nickName;
 
 			connection = new TcpClient();
+
+			thr_ReceiveMessages = new Thread(KeepListening);
+			thr_ReceiveMessages.IsBackground = true;
+			thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
 		}
 
 		public bool Connect()
@@ -36,6 +48,9 @@ namespace ChatApp
 			try
 			{
 				connection.Connect(targetAddress, ClientInformation.Port);
+				connected = true;
+
+				thr_ReceiveMessages.Start();
 
 				return true;
 			}
@@ -43,14 +58,51 @@ namespace ChatApp
 			{
 				Console.WriteLine("Fehler beim Verbinen mit: " + targetAddress.ToString());
 				Console.WriteLine("Fehler: " + e.Message);
-			}
-			finally
-			{
-				connection.Close();
+
+				connected = false;
 			}
 
 			return false;
 		}
+
+		public void CloseConnection()
+		{
+			if (connected)
+			{
+				connected = false;
+			}
+		}
+
+		private void KeepListening()
+		{
+			string message;
+
+			reader = new StreamReader(connection.GetStream());
+
+			while (connected)
+			{
+				message = reader.ReadLine();
+
+				Console.WriteLine(message);
+			}
+
+			writer.Close();
+			reader.Close();
+			connection.Close();
+		}
+
+		public void SendMessage(Message msg)
+		{
+			if (connected)
+			{
+				writer = new StreamWriter(connection.GetStream());
+
+				writer.WriteLine(msg.ToString());
+				writer.Flush();
+
+			}
+		}
+
 
         
     }

@@ -37,6 +37,8 @@
 			this.lb_Clients = new System.Windows.Forms.ListBox();
 			this.btn_StartTCPListening = new System.Windows.Forms.Button();
 			this.btn_Connect = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
+			this.tb_TCPMessage = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// testBox
@@ -121,11 +123,30 @@
 			this.btn_Connect.UseVisualStyleBackColor = true;
 			this.btn_Connect.Click += new System.EventHandler(this.btn_Connect_Click);
 			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(226, 221);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(116, 23);
+			this.button2.TabIndex = 9;
+			this.button2.Text = "Nachricht senden";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
+			// tb_TCPMessage
+			// 
+			this.tb_TCPMessage.Location = new System.Drawing.Point(30, 131);
+			this.tb_TCPMessage.Name = "tb_TCPMessage";
+			this.tb_TCPMessage.Size = new System.Drawing.Size(351, 20);
+			this.tb_TCPMessage.TabIndex = 10;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(688, 345);
+			this.Controls.Add(this.tb_TCPMessage);
+			this.Controls.Add(this.button2);
 			this.Controls.Add(this.btn_Connect);
 			this.Controls.Add(this.btn_StartTCPListening);
 			this.Controls.Add(this.lb_Clients);
@@ -154,6 +175,8 @@
 		private System.Windows.Forms.ListBox lb_Clients;
 		private System.Windows.Forms.Button btn_StartTCPListening;
 		private System.Windows.Forms.Button btn_Connect;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.TextBox tb_TCPMessage;
 	}
 }
 

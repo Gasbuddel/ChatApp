@@ -62,9 +62,9 @@ namespace ChatApp
 				{
 					newClient = listener.AcceptTcpClient();
 
-					DelClientAccepted(newClient);
+					//DelClientAccepted(newClient);
 
-					Console.WriteLine("Client akzeptiert: " + newClient.ToString());
+					Console.WriteLine("Client akzeptiert: " + newClient.Client.LocalEndPoint.ToString());
 				}
 				listener.Stop();
 			}
