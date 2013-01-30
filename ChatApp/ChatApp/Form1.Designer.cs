@@ -35,6 +35,8 @@
 			this.btn_BroadcastTest = new System.Windows.Forms.Button();
 			this.btn_ReceiveBroadcast = new System.Windows.Forms.Button();
 			this.lb_Clients = new System.Windows.Forms.ListBox();
+			this.btn_StartTCPListening = new System.Windows.Forms.Button();
+			this.btn_Connect = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// testBox
@@ -83,7 +85,7 @@
 			// 
 			// btn_ReceiveBroadcast
 			// 
-			this.btn_ReceiveBroadcast.Location = new System.Drawing.Point(196, 221);
+			this.btn_ReceiveBroadcast.Location = new System.Drawing.Point(30, 250);
 			this.btn_ReceiveBroadcast.Name = "btn_ReceiveBroadcast";
 			this.btn_ReceiveBroadcast.Size = new System.Drawing.Size(147, 23);
 			this.btn_ReceiveBroadcast.TabIndex = 5;
@@ -99,11 +101,33 @@
 			this.lb_Clients.Size = new System.Drawing.Size(288, 251);
 			this.lb_Clients.TabIndex = 6;
 			// 
+			// btn_StartTCPListening
+			// 
+			this.btn_StartTCPListening.Location = new System.Drawing.Point(226, 250);
+			this.btn_StartTCPListening.Name = "btn_StartTCPListening";
+			this.btn_StartTCPListening.Size = new System.Drawing.Size(116, 23);
+			this.btn_StartTCPListening.TabIndex = 7;
+			this.btn_StartTCPListening.Text = "TCP Listener starten";
+			this.btn_StartTCPListening.UseVisualStyleBackColor = true;
+			this.btn_StartTCPListening.Click += new System.EventHandler(this.btn_StartTCPListening_Click);
+			// 
+			// btn_Connect
+			// 
+			this.btn_Connect.Location = new System.Drawing.Point(388, 293);
+			this.btn_Connect.Name = "btn_Connect";
+			this.btn_Connect.Size = new System.Drawing.Size(109, 23);
+			this.btn_Connect.TabIndex = 8;
+			this.btn_Connect.Text = "Connect";
+			this.btn_Connect.UseVisualStyleBackColor = true;
+			this.btn_Connect.Click += new System.EventHandler(this.btn_Connect_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(688, 345);
+			this.Controls.Add(this.btn_Connect);
+			this.Controls.Add(this.btn_StartTCPListening);
 			this.Controls.Add(this.lb_Clients);
 			this.Controls.Add(this.btn_ReceiveBroadcast);
 			this.Controls.Add(this.btn_BroadcastTest);
@@ -128,6 +152,8 @@
         private System.Windows.Forms.Button btn_BroadcastTest;
         private System.Windows.Forms.Button btn_ReceiveBroadcast;
 		private System.Windows.Forms.ListBox lb_Clients;
+		private System.Windows.Forms.Button btn_StartTCPListening;
+		private System.Windows.Forms.Button btn_Connect;
 	}
 }
 

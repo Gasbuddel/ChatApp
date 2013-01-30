@@ -31,6 +31,8 @@ namespace ChatApp
 		private string body;
 		//Variable zum Überprüfen, ob genügend Werte vorhanden sind, um einen gültigen String zu erzeugen
 		private int valid;
+		//Zeichen zum Trennen der Message festlegen
+		private char[] delimiter = { '|' };
 
         //Felderdeklaration
 		public string Type 
@@ -127,7 +129,7 @@ namespace ChatApp
 		//Lese einen Messagestring ein und speichere die Bestandteile in den Feldern ab
 		public void ReadMessage(string input)
 		{
-			List<string> parts = input.Split('|').ToList<string>();
+			List<string> parts = input.Split(delimiter,6).ToList<string>();
 
             //Eine MSG sollte aus 6 Teilen bestehen
 			if (parts.Count == 6)

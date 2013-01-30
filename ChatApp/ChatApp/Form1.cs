@@ -15,7 +15,9 @@ namespace ChatApp
 	public partial class Form1 : Form
 	{
 		Message msg;
-        Server serv;
+        UDPHandler serv;
+		TCPHandler tcpHandle;
+
 
 		MessageHandler msgHandle;
 		UserHandler userHandle;
@@ -26,7 +28,13 @@ namespace ChatApp
 		{
 			InitializeComponent();
 
-            serv = new Server(3333);
+			ClientInformation.Port = 3333;
+
+			ClientInformation.Nickname = "Horst";
+
+            serv = new UDPHandler();
+
+			tcpHandle = new TCPHandler();
 
 			msgHandle = new MessageHandler();
 
@@ -34,7 +42,7 @@ namespace ChatApp
 
 			serv.delBroadcast += msgHandle.ProcessMessage;
 
-			msgHandle.DelUserJoined += userHandle.AddNewUser;
+			msgHandle.DelUserJoined += userHandle.CheckRequest;
 
 			msgHandle.DelUserLeft += userHandle.DeleteUser;
 
@@ -87,6 +95,16 @@ namespace ChatApp
 				lb_Clients.Items.Clear();
 				lb_Clients.Items.AddRange(newList.ToArray());
 			}
+		}
+
+		private void btn_StartTCPListening_Click(object sender, EventArgs e)
+		{
+			tcpHandle.StartListening();
+		}
+
+		private void btn_Connect_Click(object sender, EventArgs e)
+		{
+			userHandle.OpenConnection(lb_Clients.SelectedItem.ToString());
 		}
 	}
 }

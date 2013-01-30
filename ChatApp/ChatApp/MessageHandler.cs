@@ -13,7 +13,7 @@ namespace ChatApp
 	/// </summary>
 	class MessageHandler
 	{
-		public delegate bool DelegateUserJoined(string nickName, IPAddress address);
+		public delegate void DelegateUserJoined(Message msg, IPAddress address);
 
 		public delegate bool DelegateUserLeft(string nickName);
 
@@ -31,10 +31,22 @@ namespace ChatApp
 			switch (msg.Type)
 			{
 				case "SOL":
-					DelUserJoined(msg.Nickname, source);
+					Console.WriteLine(msg.Nickname + " ist da.");
+					DelUserJoined(msg, source);
 					break;
 				case "SOD":
+					Console.WriteLine(msg.Nickname + " hat uns verlassen");
 					DelUserLeft(msg.Nickname);
+					break;
+				case "ACK":
+					Console.WriteLine(msg.Nickname + " hat uns geantwortet");
+					DelUserJoined(msg, source);
+					break;
+				case "MSG":
+					Console.WriteLine("Nachricht erhalten: " + msg.Body);
+					break;
+				case "ERR":
+					Console.WriteLine("Fehlerhafte Nachricht erhalten: " + msg.ToString());
 					break;
 				default:
 					break;

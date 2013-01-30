@@ -11,10 +11,11 @@ using System.ComponentModel;
 
 namespace ChatApp
 {
-    class Server
+	/// <summary>
+	/// Behandelt ein- und ausgehende UDP-Kommunikationen (Broadcasts)
+	/// </summary>
+    class UDPHandler
     {
-		//Port zum horchen und senden
-        private int port;
 		//Thread zum Handlen des UDP-Listening Prozesses
 		private Thread thr_UDPListen;
 
@@ -30,11 +31,14 @@ namespace ChatApp
 		/// Klasse zum Handlen von UDP Nachrichten (Senden + Empfangen)
 		/// </summary>
 		/// <param name="listenerPort">Port, auf dem gesendet und gehorcht werden soll</param>
-        public Server(int listenerPort)
+        public UDPHandler()
         {
-            port = listenerPort;
 			//Thread zum horchen auf UDP Nachrichten vorbereiten
 			thr_UDPListen = new Thread(startListeningForBroadcast);
+			//Sorgt dafür, dass der Thread bei Beendigung des Programms auch geschlossen wird
+			thr_UDPListen.IsBackground = true;
+
+			thr_UDPListen.Name = "UDP ListeningThread";
 
         }
 
@@ -48,17 +52,36 @@ namespace ChatApp
 			UdpClient udpBCSendClient = new UdpClient();
 
             //EndPoint definieren bzw. Ziel des Broadcastes
-            IPEndPoint broadcastTarget = new IPEndPoint(IPAddress.Broadcast, port);
+            IPEndPoint broadcastTarget = new IPEndPoint(IPAddress.Broadcast, ClientInformation.Port);
 			
 			//Nachricht senden
 			udpBCSendClient.Send(msg.CreateByteArray(), msg.CreateByteArray().Length, broadcastTarget);
 
             //Für Debug - Zwecke
-            Console.WriteLine("Broadcast sent : " + IPAddress.Broadcast.ToString() + " : " + port.ToString());
+            Console.WriteLine("Broadcast sent : " + IPAddress.Broadcast.ToString() + " : " + ClientInformation.Port);
 
 			//Verbindung schließen nicht vergessen
 			udpBCSendClient.Close();
         }
+
+		/// <summary>
+		/// Sendet eine UDP Nachricht an ein angegebenes Ziel
+		/// </summary>
+		/// <param name="msg">Message, die gesendet werden soll</param>
+		/// <param name="target">Zieladresse</param>
+		public static void SendMessage(Message msg, IPAddress target)
+		{
+			//Selbes Prinzip wie oben, nur dass die IPAddresse angegeben wird.
+			UdpClient udpMsgSendClient = new UdpClient();
+
+			IPEndPoint msgTarget = new IPEndPoint(target, ClientInformation.Port);
+
+			udpMsgSendClient.Send(msg.CreateByteArray(), msg.CreateByteArray().Length, msgTarget);
+
+			Console.WriteLine("Nachricht: '" + msg.ToString() + "' an " + target.ToString() + " gesendet.");
+
+			udpMsgSendClient.Close();
+		}
 		
 		/// <summary>
 		/// Startet den Thread zum empfangen von Broadcasts
@@ -78,9 +101,9 @@ namespace ChatApp
 		/// </summary>
 		private void startListeningForBroadcast()
 		{
-			UdpClient udpListener = new UdpClient(port);
+			UdpClient udpListener = new UdpClient(ClientInformation.Port);
 			//Endpunkt zum Empfangen von Broadcasts
-			IPEndPoint broadCastEP = new IPEndPoint(IPAddress.Any, port);
+			IPEndPoint broadCastEP = new IPEndPoint(IPAddress.Any, ClientInformation.Port);
 			try
 			{
 				while (true)
@@ -104,7 +127,8 @@ namespace ChatApp
 			{
 				udpListener.Close();
 			}
-
 		}
+
+
     }
 }
