@@ -56,7 +56,7 @@ namespace ChatApp
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("Fehler beim Verbinen mit: " + targetAddress.ToString());
+				Console.WriteLine("Fehler beim Verbinden mit: " + targetAddress.ToString());
 				Console.WriteLine("Fehler: " + e.Message);
 
 				connected = false;
@@ -81,9 +81,9 @@ namespace ChatApp
 
 			while (connected)
 			{
-				message = reader.ReadLine();
+				message = reader.ReadToEnd();
 
-				Console.WriteLine(message);
+				Console.WriteLine("Message from " + nickName + ": " + message);
 			}
 
 			writer.Close();

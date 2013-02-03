@@ -7,12 +7,7 @@ using System.Net;
 
 namespace ChatApp
 {
-	//Enum für die verschiedenen Messagetypen
-	public enum Types { SOL,MSG,ACK,SOD};
-	//Enum für die diversen Stati
-	public enum States { ONL, AFK, DND };
-
-	class Message
+	public class Message
 	{
         //Variablen
 		//Typ der Nachricht (SOL, MSG, ACK, SOD erlaubt)
@@ -29,8 +24,6 @@ namespace ChatApp
 		private int length = 0;
 		//Nachrichtenkörper
 		private string body;
-		//Variable zum Überprüfen, ob genügend Werte vorhanden sind, um einen gültigen String zu erzeugen
-		private int valid;
 		//Zeichen zum Trennen der Message festlegen
 		private char[] delimiter = { '|' };
 
@@ -40,13 +33,12 @@ namespace ChatApp
 			get { return type; }
 			set
 			{
-				if (value == "MSG" || value == "SOL" || value == "SOD" || value == "ACK")
+				if (value == "MSG" || value == "SOL" || value == "BYE" || value == "ACK")
 				{
 					type = value;
-					valid++;
 				}
 				else
-					value = "ERR";
+					type = "ERR";
 			}
 		}
 
@@ -129,19 +121,17 @@ namespace ChatApp
 		//Lese einen Messagestring ein und speichere die Bestandteile in den Feldern ab
 		public void ReadMessage(string input)
 		{
-			List<string> parts = input.Split(delimiter,6).ToList<string>();
+			List<string> parts = input.Split(delimiter,7).ToList<string>();
 
             //Eine MSG sollte aus 6 Teilen bestehen
-			if (parts.Count == 6)
+			if (parts.Count == 7)
 			{
 				Type = parts[0];
 				SecTime = Convert.ToDouble(parts[1]);
 				Version = parts[2];
 				Status = parts[3];
 				Nickname = parts[4];
-				//Die Nachricht befindet sich im letzten Teil der Liste und wird durch ein ":" getrennt
-				string msg = parts[5].Split(':')[1];
-				Body = msg;
+				Body = parts[6];
 			}
 			else
 			{
@@ -174,7 +164,7 @@ namespace ChatApp
                 output = output + nickname + "|";
                 if (body == "")
                     Body = "0";
-                output = output + length + ":";
+                output = output + length + "|";
                 output = output + body;
             }			
 

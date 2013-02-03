@@ -86,7 +86,7 @@ namespace ChatApp
 		/// <summary>
 		/// Startet den Thread zum empfangen von Broadcasts
 		/// </summary>
-		public void ReceiveBroadcast()
+		public void StartListening()
 		{
 			//Absichern, ob der Thread bereits läuft
 			if (!thr_UDPListen.IsAlive)

@@ -34,7 +34,7 @@ namespace ChatApp
 					Console.WriteLine(msg.Nickname + " ist da.");
 					DelUserJoined(msg, source);
 					break;
-				case "SOD":
+				case "BYE":
 					Console.WriteLine(msg.Nickname + " hat uns verlassen");
 					DelUserLeft(msg.Nickname);
 					break;
