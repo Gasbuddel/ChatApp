@@ -13,7 +13,8 @@ namespace ChatApp
 		//Typ der Nachricht (SOL, MSG, ACK, SOD erlaubt)
 		private string type;
 		//Timestamp zur Zeit des Sendens (Format: Sekunden seit 1970)
-		private double time = 0;
+		//private double time = 0;
+		private int time = 0;
 		//Version der Nachricht (z.B. 1.0.0.0)
 		private string version;
 		//Nickname des Senders
@@ -33,7 +34,7 @@ namespace ChatApp
 			get { return type; }
 			set
 			{
-				if (value == "MSG" || value == "SOL" || value == "BYE" || value == "ACK")
+				if (value == "SOL" || value == "SOD" || value == "BYE" || value == "ACK")
 				{
 					type = value;
 				}
@@ -55,11 +56,17 @@ namespace ChatApp
             }
         }
 
-        public double SecTime 
-        {
-            get { return time; }
-            set { time = value; } 
-        }
+		//public double SecTime 
+		//{
+		//	get { return time; }
+		//	set { time = value; } 
+		//}
+
+		public int SecTime
+		{
+			get { return time; }
+			set { time = value; }
+		}
 
 
 		public string Version 
@@ -71,7 +78,15 @@ namespace ChatApp
 		public string Status 
         { 
             get { return status; }
-            set { status = value; } 
+			set
+			{
+				if (value == "ONL" || value == "OFF" || value == "AFK" || value == "DND")
+				{
+					status = value;
+				}
+				else
+					status = "ERR";
+			}
         }
 
 		public string Nickname 
@@ -98,7 +113,7 @@ namespace ChatApp
 		{
 			Type = "";
 			TimeStamp = DateTime.Now;
-			Version = "1.0.0.0";
+			Version = "0.0.1.0";
 			Status = "";
 			Nickname = "";
 			Body = "0";
@@ -114,7 +129,7 @@ namespace ChatApp
 		//Message aus einem byte-Array erstellen
 		public Message(byte[] input)
 		{
-			ASCIIEncoding encoder = new ASCIIEncoding();
+			UnicodeEncoding encoder = new UnicodeEncoding();
 			ReadMessage(encoder.GetString(input,0,input.Length));
 		}
 
@@ -127,7 +142,8 @@ namespace ChatApp
 			if (parts.Count == 7)
 			{
 				Type = parts[0];
-				SecTime = Convert.ToDouble(parts[1]);
+				//SecTime = Convert.ToDouble(parts[1]);
+				SecTime = Convert.ToInt32(parts[1]);
 				Version = parts[2];
 				Status = parts[3];
 				Nickname = parts[4];
@@ -137,7 +153,7 @@ namespace ChatApp
 			{
 				Type = "ERR";
 				TimeStamp = DateTime.Now;
-				Version = "1.0.0.0";
+				Version = "0.0.1.0";
 				Status = "";
 				Nickname = "";
 				Body = "Wrong Format: " + input;
@@ -146,7 +162,7 @@ namespace ChatApp
 
 		public void ReadMessage(byte[] input)
 		{
-			ASCIIEncoding encoder = new ASCIIEncoding();
+			UnicodeEncoding encoder = new UnicodeEncoding();
 			ReadMessage(encoder.GetString(input, 0, input.Length));
 		}
 
@@ -173,7 +189,7 @@ namespace ChatApp
 
         public byte[] CreateByteArray()
         {
-            ASCIIEncoding encoder = new ASCIIEncoding();
+            UnicodeEncoding encoder = new UnicodeEncoding();
             return encoder.GetBytes(CreateMessageString());
         }
 

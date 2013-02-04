@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Data;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
@@ -24,17 +26,35 @@ namespace ChatApp
 
 		private Dictionary<string, IPAddress> users;
 
+		private Dictionary<IPAddress, string> addresses;
+
 		private Dictionary<string, Client> connections;
 
 		public Dictionary<string, IPAddress> Users { get { return users; } }
 
 		public Dictionary<string, Client> Connections { get { return connections; } }
 
-		public UserHandler()
+		Thread tcpAcceptThread;
+
+		private string nickname;
+
+		UDPHandler udpHandle;
+
+		int port;
+
+		public UserHandler(string nickname, int port)
 		{
 			users = new Dictionary<string, IPAddress>();
 
+			addresses = new Dictionary<IPAddress, string>();
+
 			connections = new Dictionary<string, Client>();
+
+			this.nickname = nickname;
+
+			this.port = port;
+
+			udpHandle = UDPHandler.GetInstance(port);
 		}
 
 		/// <summary>
@@ -50,13 +70,7 @@ namespace ChatApp
 				AddNewUser(msg.Nickname, address);
 
 				//ACK zurücksenden
-				Message acknowledged = new Message();
-
-				acknowledged.Type = "ACK";
-				acknowledged.Status = "ONL";
-				acknowledged.Nickname = ClientInformation.Nickname;
-
-				UDPHandler.SendMessage(acknowledged, address);
+				udpHandle.SendMessage(MessageCreator.CreateACK(nickname), address);
 			}
 			//Im Falle ACK nur hinzufügen
 			else if (msg.Type == "ACK")
@@ -76,6 +90,7 @@ namespace ChatApp
 			if (!users.ContainsKey(name))
 			{
 				users.Add(name, address);
+				addresses.Add(address, name);
 
 				Console.WriteLine("Benutzer: " + name + " wurde hinzugefügt");
 
@@ -103,15 +118,53 @@ namespace ChatApp
 			return false;
 		}
 
-		public bool OpenConnection(string nickName)
+		public bool OpenConnection(string clientNickName)
 		{
-			if (users.ContainsKey(nickName))
+			if (users.ContainsKey(clientNickName))
 			{
-				connections.Add(nickName,new Client(nickName, users[nickName]));
+				if (!connections.ContainsKey(nickname))
+				{
+					connections.Add(clientNickName, new Client(clientNickName, users[clientNickName], port));
 
-				connections[nickName].Connect();
+					connections[clientNickName].Connect();
+				}
 			}
 			return false;
+		}
+
+		public void AcceptConnection(TcpClient client)
+		{
+			bool isVorhanden = false;
+			IPAddress clientAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
+
+			foreach (Client cl in connections.Values)
+			{
+				if (cl.TargetAddress == clientAddress)
+				{
+					isVorhanden = true;
+				}
+			}
+
+			if (!isVorhanden)
+			{
+				if(addresses.ContainsKey(clientAddress))
+				{
+					connections.Add(addresses[clientAddress],new Client(addresses[clientAddress],client));
+					connections[addresses[clientAddress]].Connect();
+				}
+			}
+		}
+
+		private void ListenForMessage(TcpClient client)
+		{
+			StreamReader listen = new StreamReader(client.GetStream());
+
+			string response;
+
+			while ((response = listen.ReadLine()) != "")
+			{
+				Console.WriteLine("TCP: " + response);
+			}
 		}
 	}
 }

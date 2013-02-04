@@ -15,6 +15,8 @@ namespace ChatApp
 	/// </summary>
 	class TCPHandler
 	{
+		int port;
+
 		/// <summary>
 		/// Ein Client wurde akzeptiert
 		/// </summary>
@@ -29,8 +31,9 @@ namespace ChatApp
 		//Server läuft (bei false wird der Listeningprozess beendet)
 		bool servRunning;
 
-		public TCPHandler()
+		public TCPHandler(int port)
 		{
+			this.port = port;
 			thr_TcpListen = new Thread(keepListening);
 			thr_TcpListen.IsBackground = true;
 			thr_TcpListen.Name = "TCP Listening Thread";
@@ -47,7 +50,7 @@ namespace ChatApp
 
 		private void keepListening()
 		{
-			TcpListener listener = new TcpListener(IPAddress.Any, ClientInformation.Port);
+			TcpListener listener = new TcpListener(IPAddress.Any, port);
 
 			listener.Start();
 
@@ -62,7 +65,8 @@ namespace ChatApp
 				{
 					newClient = listener.AcceptTcpClient();
 
-					//DelClientAccepted(newClient);
+					if(DelClientAccepted != null)
+						DelClientAccepted(newClient);
 
 					Console.WriteLine("Client akzeptiert: " + newClient.Client.LocalEndPoint.ToString());
 				}

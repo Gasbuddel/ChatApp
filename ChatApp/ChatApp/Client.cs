@@ -21,6 +21,8 @@ namespace ChatApp
 
 		IPAddress targetAddress;
 
+		int port;
+
 		bool connected;
 
 		string nickName;
@@ -30,9 +32,10 @@ namespace ChatApp
 		public IPAddress TargetAddress { get { return targetAddress; } }
 		public string NickName { get { return nickName; } }
 
-		public Client(string nickName, IPAddress targetAddress)
+		public Client(string nickName, IPAddress targetAddress, int port)
 		{
 			this.targetAddress = targetAddress;
+			this.port = port;
 
 			this.nickName = nickName;
 
@@ -43,11 +46,25 @@ namespace ChatApp
 			thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
 		}
 
+		public Client(string nickName, TcpClient client)
+		{
+			this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
+			this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
+
+			this.nickName = nickName;
+
+			connection = client;
+
+			thr_ReceiveMessages = new Thread(KeepListening);
+			thr_ReceiveMessages.IsBackground = true;
+			thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+		}
+
 		public bool Connect()
 		{
 			try
 			{
-				connection.Connect(targetAddress, ClientInformation.Port);
+				connection.Connect(targetAddress, port);
 				connected = true;
 
 				thr_ReceiveMessages.Start();
@@ -79,10 +96,8 @@ namespace ChatApp
 
 			reader = new StreamReader(connection.GetStream());
 
-			while (connected)
+			while ((message = reader.ReadLine()) != "")
 			{
-				message = reader.ReadToEnd();
-
 				Console.WriteLine("Message from " + nickName + ": " + message);
 			}
 
