@@ -10,8 +10,12 @@ using System.IO;
 
 namespace ChatApp
 {
-    class Client
+    public class Client
     {
+
+		public delegate void DelegateClientMessageReceived(Message msg);
+
+		public DelegateClientMessageReceived DelClientMessageReceived;
 
 		TcpClient connection;
 
@@ -23,7 +27,13 @@ namespace ChatApp
 
 		int port;
 
-		bool connected;
+		bool connected = false;
+
+		public bool Connected 
+		{
+			get { return connected; } 
+		}
+
 
 		string nickName;
 
@@ -32,6 +42,14 @@ namespace ChatApp
 		public IPAddress TargetAddress { get { return targetAddress; } }
 		public string NickName { get { return nickName; } }
 
+		ChatWindow chWindow;
+
+		/// <summary>
+		/// Erstellt einen neuen Client und baut die TCP-Verbindung mit den Angaben auf
+		/// </summary>
+		/// <param name="nickName">Name des Clients</param>
+		/// <param name="targetAddress">Ziel-IP Adresse</param>
+		/// <param name="port">Zielport</param>
 		public Client(string nickName, IPAddress targetAddress, int port)
 		{
 			this.targetAddress = targetAddress;
@@ -44,28 +62,68 @@ namespace ChatApp
 			thr_ReceiveMessages = new Thread(KeepListening);
 			thr_ReceiveMessages.IsBackground = true;
 			thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+
+			connected = true;
 		}
 
-		public Client(string nickName, TcpClient client)
+		/// <summary>
+		/// Stellt eine Verbindung mit einem TCP-Client her.
+		/// Dabei wird versucht mittels der gesendeten Informationen, einen Benutzernamen ausfindig zu machen
+		/// </summary>
+		/// <param name="client">Zielclient</param>
+		public Client(TcpClient client)
 		{
-			this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
-			this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
+			Message clientResp = TryReceiving(client);
 
-			this.nickName = nickName;
+			if (clientResp.Type != "ERR")
+			{
+				this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
+				this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
 
-			connection = client;
+				this.nickName = clientResp.Nickname;
 
-			thr_ReceiveMessages = new Thread(KeepListening);
-			thr_ReceiveMessages.IsBackground = true;
-			thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+				connection = client;
+
+				thr_ReceiveMessages = new Thread(KeepListening);
+				thr_ReceiveMessages.IsBackground = true;
+				thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+
+				connected = true;
+			}
 		}
 
+		/// <summary>
+		/// Nimmt eine Nachricht auf, um sicherzustellen, dass es sich um eine Protokollkonorme Kommunikation
+		/// </summary>
+		/// <param name="client">Zielclient</param>
+		/// <returns>Empfangene Nachricht</returns>
+		private Message TryReceiving(TcpClient client)
+		{
+			StreamReader reader = new StreamReader(client.GetStream());
+
+			string receivedLine = reader.ReadLine();
+
+			Message receivedMessage = new Message(receivedLine);
+
+			return receivedMessage;
+		}
+
+		/// <summary>
+		/// Verbindet den Client, um auf einkommende Nachrichten zu lauschen
+		/// </summary>
+		/// <returns>Verbindung erfolgreich</returns>
 		public bool Connect()
 		{
+
 			try
 			{
 				connection.Connect(targetAddress, port);
 				connected = true;
+
+				chWindow = new ChatWindow(this);
+				this.DelClientMessageReceived += chWindow.AktualisiereNachrichten;
+
+				chWindow.Show();
 
 				thr_ReceiveMessages.Start();
 
@@ -82,14 +140,9 @@ namespace ChatApp
 			return false;
 		}
 
-		public void CloseConnection()
-		{
-			if (connected)
-			{
-				connected = false;
-			}
-		}
-
+		/// <summary>
+		/// Verbindung aufrecht erhalten
+		/// </summary>
 		private void KeepListening()
 		{
 			string message;
@@ -98,6 +151,9 @@ namespace ChatApp
 
 			while ((message = reader.ReadLine()) != "")
 			{
+				if(DelClientMessageReceived != null)
+					DelClientMessageReceived(new Message(message));
+
 				Console.WriteLine("Message from " + nickName + ": " + message);
 			}
 
@@ -106,6 +162,21 @@ namespace ChatApp
 			connection.Close();
 		}
 
+		/// <summary>
+		/// Verbindung abbrechen
+		/// </summary>
+		public void CloseConnection()
+		{
+			if (connected)
+			{
+				connected = false;
+			}
+		}
+
+		/// <summary>
+		/// Sende eine Nachricht an den Clienten
+		/// </summary>
+		/// <param name="msg"></param>
 		public void SendMessage(Message msg)
 		{
 			if (connected)

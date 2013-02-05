@@ -89,7 +89,7 @@ namespace ChatApp
 
 			Console.WriteLine("Nachricht: '" + msg.ToString() + "' an " + target.ToString() + " gesendet.");
 
-			udpMsgSendClient.Close();
+			//udpMsgSendClient.Close();
 		}
 		
 		/// <summary>

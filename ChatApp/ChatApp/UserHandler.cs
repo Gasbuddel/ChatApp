@@ -26,8 +26,6 @@ namespace ChatApp
 
 		private Dictionary<string, IPAddress> users;
 
-		private Dictionary<IPAddress, string> addresses;
-
 		private Dictionary<string, Client> connections;
 
 		public Dictionary<string, IPAddress> Users { get { return users; } }
@@ -45,8 +43,6 @@ namespace ChatApp
 		public UserHandler(string nickname, int port)
 		{
 			users = new Dictionary<string, IPAddress>();
-
-			addresses = new Dictionary<IPAddress, string>();
 
 			connections = new Dictionary<string, Client>();
 
@@ -90,7 +86,7 @@ namespace ChatApp
 			if (!users.ContainsKey(name))
 			{
 				users.Add(name, address);
-				addresses.Add(address, name);
+				//addresses.Add(address, name);
 
 				Console.WriteLine("Benutzer: " + name + " wurde hinzugefügt");
 
@@ -118,6 +114,11 @@ namespace ChatApp
 			return false;
 		}
 
+		/// <summary>
+		/// Stellt eine Verbindung zu einem Client aus der Liste her
+		/// </summary>
+		/// <param name="clientNickName">Client, zu dem verbunden werden soll</param>
+		/// <returns>Verbindung erfolgreich</returns>
 		public bool OpenConnection(string clientNickName)
 		{
 			if (users.ContainsKey(clientNickName))
@@ -127,44 +128,30 @@ namespace ChatApp
 					connections.Add(clientNickName, new Client(clientNickName, users[clientNickName], port));
 
 					connections[clientNickName].Connect();
+					return true;
 				}
 			}
 			return false;
 		}
 
+		/// <summary>
+		/// Akzeptiert eingehende TCP-Anfragen und erstellt einen dazugehörigen CLient, sofern noch keiner vorhanden
+		/// ist
+		/// </summary>
+		/// <param name="client">Neuer Client</param>
 		public void AcceptConnection(TcpClient client)
 		{
-			bool isVorhanden = false;
-			IPAddress clientAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
-
-			foreach (Client cl in connections.Values)
+			Client newClient = new Client(client);
+			if (newClient.Connected)
 			{
-				if (cl.TargetAddress == clientAddress)
+				if(!connections.ContainsKey(newClient.NickName))
 				{
-					isVorhanden = true;
+					connections.Add(newClient.NickName, newClient);
+					newClient.Connect();
 				}
 			}
-
-			if (!isVorhanden)
-			{
-				if(addresses.ContainsKey(clientAddress))
-				{
-					connections.Add(addresses[clientAddress],new Client(addresses[clientAddress],client));
-					connections[addresses[clientAddress]].Connect();
-				}
-			}
+			
 		}
 
-		private void ListenForMessage(TcpClient client)
-		{
-			StreamReader listen = new StreamReader(client.GetStream());
-
-			string response;
-
-			while ((response = listen.ReadLine()) != "")
-			{
-				Console.WriteLine("TCP: " + response);
-			}
-		}
 	}
 }

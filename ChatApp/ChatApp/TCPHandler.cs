@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
@@ -16,6 +17,8 @@ namespace ChatApp
 	class TCPHandler
 	{
 		int port;
+
+		public int Port { get { return port; } }
 
 		/// <summary>
 		/// Ein Client wurde akzeptiert
@@ -31,6 +34,10 @@ namespace ChatApp
 		//Server läuft (bei false wird der Listeningprozess beendet)
 		bool servRunning;
 
+		/// <summary>
+		/// Hört auf eingehende TCP-Anfragen auf dem angegebenen Port und leitet diese via Delegat weiter
+		/// </summary>
+		/// <param name="port">Hörerport</param>
 		public TCPHandler(int port)
 		{
 			this.port = port;
@@ -39,6 +46,9 @@ namespace ChatApp
 			thr_TcpListen.Name = "TCP Listening Thread";
 		}
 
+		/// <summary>
+		/// Initialisiert den Listeningvorgang
+		/// </summary>
 		public void StartListening()
 		{
 			if (!thr_TcpListen.IsAlive)
@@ -48,6 +58,9 @@ namespace ChatApp
 			}
 		}
 
+		/// <summary>
+		/// Listening aufrechterhalten und eingehende Clientanfragen weiterleiten
+		/// </summary>
 		private void keepListening()
 		{
 			TcpListener listener = new TcpListener(IPAddress.Any, port);
@@ -65,7 +78,7 @@ namespace ChatApp
 				{
 					newClient = listener.AcceptTcpClient();
 
-					if(DelClientAccepted != null)
+					if (DelClientAccepted != null)
 						DelClientAccepted(newClient);
 
 					Console.WriteLine("Client akzeptiert: " + newClient.Client.LocalEndPoint.ToString());
@@ -82,6 +95,9 @@ namespace ChatApp
 			}
 		}
 
+		/// <summary>
+		/// Mit dem Listeningvorgang aufhören
+		/// </summary>
 		public void StopListening()
 		{
 			if (servRunning)

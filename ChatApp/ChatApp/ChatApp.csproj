@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChatWindow.Designer.cs">
+      <DependentUpon>ChatWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="ClientInformation.cs" />
     <Compile Include="ChatApp.cs">
@@ -66,6 +72,9 @@
     <Compile Include="UserHandler.cs" />
     <EmbeddedResource Include="ChatApp.resx">
       <DependentUpon>ChatApp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChatWindow.resx">
+      <DependentUpon>ChatWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -38,12 +38,12 @@ namespace ChatApp
 
         public static Message CreateMSG(string nickname,string body)
         {
-            Message sol = new Message();
-            sol.Type = "MSG";
-            sol.Status = "ONL";
-            sol.Nickname = nickname;
-            sol.Body = body;
-            return sol;
+            Message msg = new Message();
+            msg.Type = "MSG";
+			msg.Status = "ONL";
+			msg.Nickname = nickname;
+			msg.Body = body;
+            return msg;
         }
     }
 }

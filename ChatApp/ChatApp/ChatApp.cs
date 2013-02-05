@@ -86,7 +86,7 @@ namespace ChatApp
 
         private void btn_Login_Click(object sender, EventArgs e)
         {
-            if (tb_NickName.Text != "")
+            if (tb_NickName.Text != "" && !tb_NickName.Text.Contains('|'))
             {
                 InitializeClient();
             }
@@ -128,7 +128,7 @@ namespace ChatApp
 
 		private void ChatApp_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (ClientInformation.Nickname != "")
+			if (ClientInformation.Nickname != null)
 				udpHandle.SendBroadCast(MessageCreator.CreateSOD(ClientInformation.Nickname));
 		}
 

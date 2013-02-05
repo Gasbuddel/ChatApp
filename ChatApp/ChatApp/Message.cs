@@ -34,7 +34,7 @@ namespace ChatApp
 			get { return type; }
 			set
 			{
-				if (value == "SOL" || value == "SOD" || value == "BYE" || value == "ACK")
+				if (value == "SOL" || value == "SOD" || value == "BYE" || value == "ACK" || value == "MSG")
 				{
 					type = value;
 				}
