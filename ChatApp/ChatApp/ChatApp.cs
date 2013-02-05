@@ -98,7 +98,8 @@ namespace ChatApp
 
 		private void btn_Connect_Click(object sender, EventArgs e)
 		{
-			userHandle.OpenConnection(lb_Clients.SelectedItem.ToString());
+			if(lb_Clients.SelectedIndex != -1)
+				userHandle.OpenConnection(lb_Clients.SelectedItem.ToString());
 		}
 
 		private void button2_Click(object sender, EventArgs e)

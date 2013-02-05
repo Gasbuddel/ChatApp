@@ -35,7 +35,7 @@ namespace ChatApp
 		}
 
 
-		string nickName;
+		string nickName = "";
 
 		Thread thr_ReceiveMessages;
 
@@ -73,22 +73,30 @@ namespace ChatApp
 		/// <param name="client">Zielclient</param>
 		public Client(TcpClient client)
 		{
-			Message clientResp = TryReceiving(client);
-
-			if (clientResp.Type != "ERR")
+			try
 			{
-				this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
-				this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
+				Message clientResp = TryReceiving(client);
 
-				this.nickName = clientResp.Nickname;
+				if (clientResp.Type != "ERR")
+				{
+					this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
+					this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
 
-				connection = client;
+					this.nickName = clientResp.Nickname;
 
-				thr_ReceiveMessages = new Thread(KeepListening);
-				thr_ReceiveMessages.IsBackground = true;
-				thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+					connection = client;
 
-				connected = true;
+					thr_ReceiveMessages = new Thread(KeepListening);
+					thr_ReceiveMessages.IsBackground = true;
+					thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+
+					connected = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				this.connected = false;
 			}
 		}
 
@@ -114,20 +122,23 @@ namespace ChatApp
 		/// <returns>Verbindung erfolgreich</returns>
 		public bool Connect()
 		{
-
 			try
 			{
-				connection.Connect(targetAddress, port);
-				connected = true;
+				//TODO!!
+				//connection.BeginConnect(targetAddress, port);
+				if (connection.Connected)
+				{
+					connected = true;
 
-				chWindow = new ChatWindow(this);
-				this.DelClientMessageReceived += chWindow.AktualisiereNachrichten;
+					chWindow = new ChatWindow(this);
+					this.DelClientMessageReceived += chWindow.AktualisiereNachrichten;
 
-				chWindow.Show();
+					chWindow.Text = "Chat mit " + NickName;
 
-				thr_ReceiveMessages.Start();
+					chWindow.Show();
 
-				return true;
+					thr_ReceiveMessages.Start();
+				}
 			}
 			catch (Exception e)
 			{
@@ -135,9 +146,11 @@ namespace ChatApp
 				Console.WriteLine("Fehler: " + e.Message);
 
 				connected = false;
-			}
 
+				return false;
+			}
 			return false;
+
 		}
 
 		/// <summary>
@@ -187,9 +200,6 @@ namespace ChatApp
 				writer.Flush();
 
 			}
-		}
-
-
-        
+		}     
     }
 }
