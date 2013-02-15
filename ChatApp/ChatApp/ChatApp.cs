@@ -64,12 +64,15 @@ namespace ChatApp
             btn_SendBye.Enabled = true;
             tb_TCPMessage.Enabled = true;
             btn_Connect.Enabled = true;
-            button2.Enabled = true;
 
             //Wir sind online, als senden wir ein SOL
             udpHandle.SendBroadCast(MessageCreator.CreateSOL(ClientInformation.Nickname));
         }
 
+        /// <summary>
+        /// Aktualisiere die ClientListe
+        /// </summary>
+        /// <param name="newList">Neue Liste von Clients</param>
 		private void aktualisiereListe(List<string> newList)
 		{
 			if (InvokeRequired)
@@ -84,6 +87,7 @@ namespace ChatApp
 			}
 		}
 
+        //Benutzer anmelden
         private void btn_Login_Click(object sender, EventArgs e)
         {
             if (tb_NickName.Text != "" && !tb_NickName.Text.Contains('|'))
@@ -96,37 +100,39 @@ namespace ChatApp
             }
         }
 
+        //TCP-Verbindung mit Benutzer aufbauen
 		private void btn_Connect_Click(object sender, EventArgs e)
 		{
 			if(lb_Clients.SelectedIndex != -1)
 				userHandle.OpenConnection(lb_Clients.SelectedItem.ToString());
 		}
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			userHandle.Connections[lb_Clients.SelectedItem.ToString()].SendMessage(MessageCreator.CreateMSG(ClientInformation.Nickname,tb_TCPMessage.Text));
-		}
-
+        //Einen SOL senden
         private void btn_SendSol_Click(object sender, EventArgs e)
         {
             udpHandle.SendBroadCast(MessageCreator.CreateSOL(ClientInformation.Nickname));
         }
 
+        //Ein ACK senden
         private void btn_SendAck_Click(object sender, EventArgs e)
         {
             udpHandle.SendBroadCast(MessageCreator.CreateACK(ClientInformation.Nickname));
         }
 
+
+        //Ein SOL senden
         private void btn_SendBye_Click(object sender, EventArgs e)
         {
             udpHandle.SendBroadCast(MessageCreator.CreateSOD(ClientInformation.Nickname));
         }
 
+        //Eine UDP-MSG senden
         private void btn_SendUDP_Click(object sender, EventArgs e)
         {
             udpHandle.SendBroadCast(MessageCreator.CreateMSG(ClientInformation.Nickname,tb_TCPMessage.Text));
         }
 
+        //Beim beenden noch ein SOD senden, damit man anzeigt, dass man auch weg ist
 		private void ChatApp_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			if (ClientInformation.Nickname != null)

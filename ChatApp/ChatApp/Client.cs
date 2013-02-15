@@ -31,7 +31,7 @@ namespace ChatApp
 
 		public bool Connected 
 		{
-			get { return connected; } 
+			get { return connection.Connected; } 
 		}
 
 
@@ -42,7 +42,7 @@ namespace ChatApp
 		public IPAddress TargetAddress { get { return targetAddress; } }
 		public string NickName { get { return nickName; } }
 
-		ChatWindow chWindow;
+		//ChatWindow chWindow;
 
 		/// <summary>
 		/// Erstellt einen neuen Client und baut die TCP-Verbindung mit den Angaben auf
@@ -62,6 +62,8 @@ namespace ChatApp
 			thr_ReceiveMessages = new Thread(KeepListening);
 			thr_ReceiveMessages.IsBackground = true;
 			thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+
+            DelClientMessageReceived += delegate(Message msg) { };
 
 			connected = true;
 		}
@@ -126,26 +128,19 @@ namespace ChatApp
 			{
 				//TODO!!
 				//connection.BeginConnect(targetAddress, port);
-				if (connection.Connected)
+				if (!connection.Connected)
 				{
-					connected = true;
-
-					chWindow = new ChatWindow(this);
-					this.DelClientMessageReceived += chWindow.AktualisiereNachrichten;
-
-					chWindow.Text = "Chat mit " + NickName;
-
-					chWindow.Show();
+                    connection.Connect(targetAddress, port);
 
 					thr_ReceiveMessages.Start();
+
+                    return true;
 				}
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Fehler beim Verbinden mit: " + targetAddress.ToString());
 				Console.WriteLine("Fehler: " + e.Message);
-
-				connected = false;
 
 				return false;
 			}

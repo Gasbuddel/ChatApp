@@ -91,7 +91,13 @@ namespace ChatApp
 				Console.WriteLine("Benutzer: " + name + " wurde hinzugefügt");
 
 				//Informiere, dass sich die Liste geändert hat
-				DelUserListChanged(users.Keys.ToList<String>());
+				//DelUserListChanged(users.Keys.ToList<String>());
+                List<string> result = new List<string>();
+                foreach(string nick in users.Keys.ToList<string>())
+                {
+                    result.Add(nick + " " + users[nick]);
+                }
+                DelUserListChanged(result);
 				return true;
 			}
 			Console.WriteLine("Benutzer: " + name + " ist schon vorhanden.");
