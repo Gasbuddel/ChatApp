@@ -24,15 +24,15 @@ namespace ChatApp
 
 		public DelegateUserListChanged DelUserListChanged;
 
+        //Über UDP gefundene Benutzer
 		private Dictionary<string, IPAddress> users;
 
-		private Dictionary<string, Client> connections;
+        //Offene TCP-Verbindungen
+		private Dictionary<string, ClientControl> connections;
 
 		public Dictionary<string, IPAddress> Users { get { return users; } }
 
-		public Dictionary<string, Client> Connections { get { return connections; } }
-
-		Thread tcpAcceptThread;
+		public Dictionary<string, ClientControl> Connections { get { return connections; } }
 
 		private string nickname;
 
@@ -40,11 +40,16 @@ namespace ChatApp
 
 		int port;
 
+        /// <summary>
+        /// Verwaltet Benutzer, die sich über Broadcasts gemeldet haben und baut Verbindungen zu diesen auf
+        /// </summary>
+        /// <param name="nickname">Nickname des Clients</param>
+        /// <param name="port">Port des Clients</param>
 		public UserHandler(string nickname, int port)
 		{
 			users = new Dictionary<string, IPAddress>();
 
-			connections = new Dictionary<string, Client>();
+			connections = new Dictionary<string, ClientControl>();
 
 			this.nickname = nickname;
 
@@ -91,13 +96,13 @@ namespace ChatApp
 				Console.WriteLine("Benutzer: " + name + " wurde hinzugefügt");
 
 				//Informiere, dass sich die Liste geändert hat
-				//DelUserListChanged(users.Keys.ToList<String>());
-                List<string> result = new List<string>();
-                foreach(string nick in users.Keys.ToList<string>())
-                {
-                    result.Add(nick + " " + users[nick]);
-                }
-                DelUserListChanged(result);
+                DelUserListChanged(users.Keys.ToList<String>());
+                //List<string> result = new List<string>();
+                //foreach(string nick in users.Keys.ToList<string>())
+                //{
+                //    result.Add(nick + " " + users[nick]);
+                //}
+                //DelUserListChanged(result);
 				return true;
 			}
 			Console.WriteLine("Benutzer: " + name + " ist schon vorhanden.");
@@ -131,7 +136,7 @@ namespace ChatApp
 			{
 				if (!connections.ContainsKey(nickname))
 				{
-					connections.Add(clientNickName, new Client(clientNickName, users[clientNickName], port));
+					connections.Add(clientNickName, new ClientControl(clientNickName, users[clientNickName], port));
 
 					connections[clientNickName].Connect();
 					return true;
@@ -147,7 +152,7 @@ namespace ChatApp
 		/// <param name="client">Neuer Client</param>
 		public void AcceptConnection(TcpClient client)
 		{
-			Client newClient = new Client(client);
+			ClientControl newClient = new ClientControl(client);
 			if (newClient.Connected)
 			{
 				if(!connections.ContainsKey(newClient.NickName))

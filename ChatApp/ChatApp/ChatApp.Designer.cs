@@ -158,6 +158,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "ChatApp";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ChatApp";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ChatApp_FormClosed);
             this.ResumeLayout(false);

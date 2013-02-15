@@ -12,6 +12,21 @@ namespace ChatApp
         Client client;
         ChatWindow clientWindow;
 
+        public bool Connected 
+        {
+            get { return client.Connected; } 
+        }
+
+        public string NickName 
+        {
+            get { return client.NickName; }
+        }
+
+        public IPAddress TargetAddress 
+        {
+            get { return client.TargetAddress; } 
+        }
+
         /// <summary>
         /// Erstelle einen Clientcontroll, um eine neue Verbindung zu öffnen
         /// </summary>
@@ -52,7 +67,11 @@ namespace ChatApp
             {
                 client.Connect();
 
-                clientWindow.SystemMessage("Client verbunden");
+                if (client.Connected)
+                {
+                    clientWindow.Show();
+                    clientWindow.SystemMessage("Client verbunden");
+                }
             }
         }
 

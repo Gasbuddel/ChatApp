@@ -44,6 +44,8 @@ namespace ChatApp
 			thr_TcpListen = new Thread(keepListening);
 			thr_TcpListen.IsBackground = true;
 			thr_TcpListen.Name = "TCP Listening Thread";
+
+            DelClientAccepted += delegate(TcpClient client) { };
 		}
 
 		/// <summary>
@@ -78,8 +80,7 @@ namespace ChatApp
 				{
 					newClient = listener.AcceptTcpClient();
 
-					if (DelClientAccepted != null)
-						DelClientAccepted(newClient);
+					DelClientAccepted(newClient);
 
 					Console.WriteLine("Client akzeptiert: " + newClient.Client.LocalEndPoint.ToString());
 				}

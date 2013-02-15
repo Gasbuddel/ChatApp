@@ -20,6 +20,9 @@ namespace ChatApp
 		MessageHandler msgHandle;
 		UserHandler userHandle;
 
+        int port;
+        string nickName;
+
 		delegate void userListChanged_Callback(List<string> newList);
 
 		public ChatApp()
@@ -31,17 +34,15 @@ namespace ChatApp
         private void InitializeClient()
         {
             //Globale Clientinformationen initialisieren
-            ClientInformation.Port = 1234;
+            port = 1234;
 
-            ClientInformation.Nickname = tb_NickName.Text;
-
-            //MessageCreator = new MessageCreator();
+            nickName = tb_NickName.Text;
 
             //Handlerklassen erstellen
-            udpHandle = UDPHandler.GetInstance(ClientInformation.Port);
-            tcpHandle = new TCPHandler(ClientInformation.Port);
+            udpHandle = UDPHandler.GetInstance(port);
+            tcpHandle = new TCPHandler(port);
             msgHandle = new MessageHandler();
-            userHandle = new UserHandler(ClientInformation.Nickname,ClientInformation.Port);
+            userHandle = new UserHandler(nickName,port);
 
             //Delegaten verbinden
             udpHandle.delBroadcast += msgHandle.ProcessMessage;
@@ -66,7 +67,7 @@ namespace ChatApp
             btn_Connect.Enabled = true;
 
             //Wir sind online, als senden wir ein SOL
-            udpHandle.SendBroadCast(MessageCreator.CreateSOL(ClientInformation.Nickname));
+            udpHandle.SendBroadCast(MessageCreator.CreateSOL(nickName));
         }
 
         /// <summary>
@@ -110,33 +111,33 @@ namespace ChatApp
         //Einen SOL senden
         private void btn_SendSol_Click(object sender, EventArgs e)
         {
-            udpHandle.SendBroadCast(MessageCreator.CreateSOL(ClientInformation.Nickname));
+            udpHandle.SendBroadCast(MessageCreator.CreateSOL(nickName));
         }
 
         //Ein ACK senden
         private void btn_SendAck_Click(object sender, EventArgs e)
         {
-            udpHandle.SendBroadCast(MessageCreator.CreateACK(ClientInformation.Nickname));
+            udpHandle.SendBroadCast(MessageCreator.CreateACK(nickName));
         }
 
 
         //Ein SOL senden
         private void btn_SendBye_Click(object sender, EventArgs e)
         {
-            udpHandle.SendBroadCast(MessageCreator.CreateSOD(ClientInformation.Nickname));
+            udpHandle.SendBroadCast(MessageCreator.CreateSOD(nickName));
         }
 
         //Eine UDP-MSG senden
         private void btn_SendUDP_Click(object sender, EventArgs e)
         {
-            udpHandle.SendBroadCast(MessageCreator.CreateMSG(ClientInformation.Nickname,tb_TCPMessage.Text));
+            udpHandle.SendBroadCast(MessageCreator.CreateMSG(nickName,tb_TCPMessage.Text));
         }
 
         //Beim beenden noch ein SOD senden, damit man anzeigt, dass man auch weg ist
 		private void ChatApp_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (ClientInformation.Nickname != null)
-				udpHandle.SendBroadCast(MessageCreator.CreateSOD(ClientInformation.Nickname));
+			if (nickName != null)
+				udpHandle.SendBroadCast(MessageCreator.CreateSOD(nickName));
 		}
 
 	}

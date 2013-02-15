@@ -24,7 +24,6 @@ namespace ChatApp
 			InitializeComponent();
 
             DelSendMessage += delegate(Message msg) { };
-
 		}
 
         /// <summary>

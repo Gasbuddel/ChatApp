@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ChatApp.Client">
+    <Position X="12.5" Y="1.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ChatApp.Client.DelegateClientMessageReceived" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Client.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAQAgBACBBAJAAAQAAAAkAAQBAIgAQAAA=</HashCode>
+      <FileName>Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.ClientControl">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAQAAAACAAAIAIAAAAAAEAAABABAAAAAA=</HashCode>
+      <FileName>ClientControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.Message">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IBQBACCEABAAAAAEAEABAABAAQQBAAAAAQAAAAAQAQA=</HashCode>
+      <FileName>Message.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.MessageCreator">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAABAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>MessageCreator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.MessageHandler">
+    <Position X="4.5" Y="4.25" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="ChatApp.MessageHandler.DelegateUserJoined" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>MessageHandler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ChatApp.MessageHandler.DelegateUserLeft" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>MessageHandler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAEAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MessageHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.TCPHandler">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ChatApp.TCPHandler.DelegateClientAccepted" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>TCPHandler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACACAAAAAgDAAAAEAAAAII=</HashCode>
+      <FileName>TCPHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.UDPHandler">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ChatApp.UDPHandler.DelegateBroadcastReceived" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>UDPHandler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABAQAAAAAAAAAAAQACAAAAAABABAAAgACAAAAAAAIIA=</HashCode>
+      <FileName>UDPHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.UnixTimeFormater">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UnixTimeFormater.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.UserHandler">
+    <Position X="7.25" Y="4" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ChatApp.UserHandler.DelegateUserListChanged" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>UserHandler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAAACCAAAAAAAAAGAQAAgAAAAQAAAAgAIAAAACABAQA=</HashCode>
+      <FileName>UserHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatApp.ClientInformation">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAACAAAAAgAAAAAAAAAAQA=</HashCode>
+      <FileName>ClientInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

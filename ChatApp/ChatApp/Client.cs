@@ -102,6 +102,58 @@ namespace ChatApp
 			}
 		}
 
+        /// <summary>
+        /// Verbindet den Client, um auf einkommende Nachrichten zu lauschen
+        /// </summary>
+        /// <returns>Verbindung erfolgreich</returns>
+        public bool Connect()
+        {
+            try
+            {
+                //TODO!!
+                //connection.BeginConnect(targetAddress, port);
+                if (!connection.Connected)
+                {
+                    connection.Connect(targetAddress, port);
+
+                    thr_ReceiveMessages.Start();
+
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Fehler beim Verbinden mit: " + targetAddress.ToString());
+                Console.WriteLine("Fehler: " + e.Message);
+
+                return false;
+            }
+            return false;
+
+        }
+
+        /// <summary>
+        /// Verbindung aufrecht erhalten
+        /// </summary>
+        private void KeepListening()
+        {
+            string message;
+
+            reader = new StreamReader(connection.GetStream());
+
+            while ((message = reader.ReadLine()) != "")
+            {
+                if (DelClientMessageReceived != null)
+                    DelClientMessageReceived(new Message(message));
+
+                Console.WriteLine("Message from " + nickName + ": " + message);
+            }
+
+            writer.Close();
+            reader.Close();
+            connection.Close();
+        }
+
 		/// <summary>
 		/// Nimmt eine Nachricht auf, um sicherzustellen, dass es sich um eine Protokollkonorme Kommunikation
 		/// </summary>
@@ -118,57 +170,7 @@ namespace ChatApp
 			return receivedMessage;
 		}
 
-		/// <summary>
-		/// Verbindet den Client, um auf einkommende Nachrichten zu lauschen
-		/// </summary>
-		/// <returns>Verbindung erfolgreich</returns>
-		public bool Connect()
-		{
-			try
-			{
-				//TODO!!
-				//connection.BeginConnect(targetAddress, port);
-				if (!connection.Connected)
-				{
-                    connection.Connect(targetAddress, port);
 
-					thr_ReceiveMessages.Start();
-
-                    return true;
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("Fehler beim Verbinden mit: " + targetAddress.ToString());
-				Console.WriteLine("Fehler: " + e.Message);
-
-				return false;
-			}
-			return false;
-
-		}
-
-		/// <summary>
-		/// Verbindung aufrecht erhalten
-		/// </summary>
-		private void KeepListening()
-		{
-			string message;
-
-			reader = new StreamReader(connection.GetStream());
-
-			while ((message = reader.ReadLine()) != "")
-			{
-				if(DelClientMessageReceived != null)
-					DelClientMessageReceived(new Message(message));
-
-				Console.WriteLine("Message from " + nickName + ": " + message);
-			}
-
-			writer.Close();
-			reader.Close();
-			connection.Close();
-		}
 
 		/// <summary>
 		/// Verbindung abbrechen
@@ -187,7 +189,7 @@ namespace ChatApp
 		/// <param name="msg"></param>
 		public void SendMessage(Message msg)
 		{
-			if (connected)
+			if (connection.Connected)
 			{
 				writer = new StreamWriter(connection.GetStream());
 
