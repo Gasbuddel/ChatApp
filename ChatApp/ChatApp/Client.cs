@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
+using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
@@ -191,7 +192,7 @@ namespace ChatApp
 		{
 			if (connection.Connected)
 			{
-				writer = new StreamWriter(connection.GetStream());
+				writer = new StreamWriter(connection.GetStream(),Encoding.Unicode);
 
 				writer.WriteLine(msg.ToString());
 				writer.Flush();

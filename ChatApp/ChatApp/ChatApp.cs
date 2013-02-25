@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
@@ -138,6 +139,11 @@ namespace ChatApp
 		{
 			if (nickName != null)
 				udpHandle.SendBroadCast(MessageCreator.CreateSOD(nickName));
+		}
+
+		private void lb_Clients_DoubleClick(object sender, EventArgs e)
+		{
+			btn_Connect_Click(sender, e);
 		}
 
 	}

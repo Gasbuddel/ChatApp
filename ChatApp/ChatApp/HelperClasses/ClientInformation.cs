@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp
+namespace ChatApp.HelperClasses
 {
 
     //Unelegant, muss noch wegrationalisiert werden!

@@ -9,6 +9,10 @@ namespace ChatApp
 {
     class ClientControl
     {
+		public delegate void DelegateClientDisconnected();
+
+		public DelegateClientDisconnected DelClientDisconnected;
+
         Client client;
         ChatWindow clientWindow;
 
@@ -39,10 +43,12 @@ namespace ChatApp
 
             clientWindow = new ChatWindow();
 
+			DelClientDisconnected += delegate() { };
+
             //Aboniere die Delegaten
             client.DelClientMessageReceived += postMessage;
             clientWindow.DelSendMessage += SendMessage;
-            
+			clientWindow.DelWindowClosed += CloseConnection;
         }
 
         /// <summary>
@@ -92,6 +98,16 @@ namespace ChatApp
         {
             clientWindow.AktualisiereNachrichten(msg);
         }
+
+		/// <summary>
+		/// Wird das Fenster geschlossen, sollte die Verbindung zu dem Client auch geschlossen werden.
+		/// </summary>
+		private void CloseConnection()
+		{
+			if(client.Connected)
+				client.CloseConnection();
+			DelClientDisconnected();
+		}
 
     }
 }

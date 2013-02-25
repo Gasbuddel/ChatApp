@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp
+namespace ChatApp.HelperClasses
 {
     //Klasse zum Formatieren von Unix zu DateTime Format
     public static class UnixTimeFormater

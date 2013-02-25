@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
@@ -15,7 +16,11 @@ namespace ChatApp
 
 		delegate void AktualisiereNachrichtenCallback(Message msg);
 
+		public delegate void DelegateWindowClosed();
+
         public delegate void DelegateSendMessage(Message msg);
+
+		public DelegateWindowClosed DelWindowClosed;
 
         public DelegateSendMessage DelSendMessage;
 
@@ -24,6 +29,8 @@ namespace ChatApp
 			InitializeComponent();
 
             DelSendMessage += delegate(Message msg) { };
+
+			DelWindowClosed += delegate() { };
 		}
 
         /// <summary>
@@ -54,6 +61,7 @@ namespace ChatApp
 			}
 			else
 			{
+				this.Text = "Konversation mit " + msg.Nickname;
 				tb_Receive.Text += msg.TimeStamp + " " +msg.Nickname + ": " + msg.Body;
 			}
 		}
@@ -69,5 +77,10 @@ namespace ChatApp
                 tb_Receive.Text += "System: " + message;
             }
         }
+
+		private void ChatWindow_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			DelWindowClosed();
+		}
 	}
 }
