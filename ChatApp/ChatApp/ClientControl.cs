@@ -43,10 +43,13 @@ namespace ChatApp
 
             clientWindow = new ChatWindow();
 
+            clientWindow.Text = "Chat mit " + nickName;
+
 			DelClientDisconnected += delegate() { };
 
             //Aboniere die Delegaten
             client.DelClientMessageReceived += postMessage;
+            client.DelConnectionClosed += ConnectionClosed;
             clientWindow.DelSendMessage += SendMessage;
 			clientWindow.DelWindowClosed += CloseConnection;
         }
@@ -55,11 +58,13 @@ namespace ChatApp
         /// Öffne einen neuen Client, um eine eingehende Verbindung zu verarbeiten
         /// </summary>
         /// <param name="connection">Zielverbindung</param>
-        public ClientControl(TcpClient connection)
+        public ClientControl(string nickName,TcpClient connection)
         {
-            client = new Client(connection);
+            client = new Client(nickName,connection);
 
             clientWindow = new ChatWindow();
+
+            clientWindow.Text = "Chat mit " + nickName;
 
             clientWindow.DelSendMessage += SendMessage;
         }
@@ -108,6 +113,14 @@ namespace ChatApp
 				client.CloseConnection();
 			DelClientDisconnected();
 		}
+
+        /// <summary>
+        /// Ist die Verbindung zum Client geschlossen worden, muss dies angezeigt werden
+        /// </summary>
+        private void ConnectionClosed()
+        {
+            clientWindow.SystemMessage("Verbindung zum Client geschlossen");
+        }
 
     }
 }

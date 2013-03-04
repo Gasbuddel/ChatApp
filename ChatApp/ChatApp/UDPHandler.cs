@@ -81,11 +81,11 @@ namespace ChatApp
 		public void SendMessage(Message msg, IPAddress target)
 		{
 			//Selbes Prinzip wie oben, nur dass die IPAddresse angegeben wird.
-			UdpClient udpMsgSendClient = new UdpClient();
+			//UdpClient udpMsgSendClient = new UdpClient();
 
 			IPEndPoint msgTarget = new IPEndPoint(target, port);
 
-			udpMsgSendClient.Send(msg.CreateByteArray(), msg.CreateByteArray().Length, msgTarget);
+			bcClient.Send(msg.CreateByteArray(), msg.CreateByteArray().Length, msgTarget);
 
 			Console.WriteLine("Nachricht: '" + msg.ToString() + "' an " + target.ToString() + " gesendet.");
 
@@ -131,10 +131,10 @@ namespace ChatApp
 			{
 				Console.WriteLine(e.ToString());
 			}
-			finally
-			{
-				bcClient.Close();
-			}
+            //finally
+            //{
+            //    bcClient.Close();
+            //}
 		}
 
 

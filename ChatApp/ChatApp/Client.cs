@@ -18,6 +18,10 @@ namespace ChatApp
 
 		public DelegateClientMessageReceived DelClientMessageReceived;
 
+        public delegate void DelegateConnectionClosed();
+
+        public DelegateConnectionClosed DelConnectionClosed;
+
 		TcpClient connection;
 
 		StreamReader reader;
@@ -66,6 +70,8 @@ namespace ChatApp
 
             DelClientMessageReceived += delegate(Message msg) { };
 
+            DelConnectionClosed += delegate() { };
+
 			connected = true;
 		}
 
@@ -74,27 +80,28 @@ namespace ChatApp
 		/// Dabei wird versucht mittels der gesendeten Informationen, einen Benutzernamen ausfindig zu machen
 		/// </summary>
 		/// <param name="client">Zielclient</param>
-		public Client(TcpClient client)
+		public Client(string nickName ,TcpClient client)
 		{
 			try
 			{
-				Message clientResp = TryReceiving(client);
 
-				if (clientResp.Type != "ERR")
-				{
-					this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
-					this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
+				this.targetAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
+				this.port = ((IPEndPoint)(client.Client.RemoteEndPoint)).Port;
 
-					this.nickName = clientResp.Nickname;
+                this.nickName = nickName;
 
-					connection = client;
+				connection = client;
 
-					thr_ReceiveMessages = new Thread(KeepListening);
-					thr_ReceiveMessages.IsBackground = true;
-					thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
+				thr_ReceiveMessages = new Thread(KeepListening);
+				thr_ReceiveMessages.IsBackground = true;
+				thr_ReceiveMessages.Name = "ReceiverThread for " + nickName;
 
-					connected = true;
-				}
+                DelClientMessageReceived += delegate(Message msg) { };
+
+                DelConnectionClosed += delegate() { };
+
+				connected = true;
+
 			}
 			catch (Exception ex)
 			{
@@ -127,6 +134,8 @@ namespace ChatApp
                 Console.WriteLine("Fehler beim Verbinden mit: " + targetAddress.ToString());
                 Console.WriteLine("Fehler: " + e.Message);
 
+                DelConnectionClosed();
+
                 return false;
             }
             return false;
@@ -142,17 +151,26 @@ namespace ChatApp
 
             reader = new StreamReader(connection.GetStream());
 
-            while ((message = reader.ReadLine()) != "")
+            while (Connected)
             {
-                if (DelClientMessageReceived != null)
+                try
+                {
+                    message = reader.ReadLine();
                     DelClientMessageReceived(new Message(message));
 
-                Console.WriteLine("Message from " + nickName + ": " + message);
+                    Console.WriteLine("Message from " + nickName + ": " + message);
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("Verbindung zu Client unterbrochen");
+                }
             }
 
             writer.Close();
             reader.Close();
             connection.Close();
+
+            DelConnectionClosed();
         }
 
 		/// <summary>
@@ -181,6 +199,7 @@ namespace ChatApp
 			if (connected)
 			{
 				connected = false;
+                DelConnectionClosed();
 			}
 		}
 

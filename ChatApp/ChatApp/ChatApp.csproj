@@ -63,6 +63,7 @@
     <Compile Include="ChatApp.Designer.cs">
       <DependentUpon>ChatApp.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperClasses\ListUser.cs" />
     <Compile Include="HelperClasses\Message.cs" />
     <Compile Include="HelperClasses\MessageCreator.cs" />
     <Compile Include="MessageHandler.cs" />

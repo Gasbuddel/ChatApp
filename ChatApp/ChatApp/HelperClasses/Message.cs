@@ -137,28 +137,42 @@ namespace ChatApp
 		//Lese einen Messagestring ein und speichere die Bestandteile in den Feldern ab
 		public void ReadMessage(string input)
 		{
-			List<string> parts = input.Split(delimiter,7).ToList<string>();
+            try
+            {
+			    List<string> parts = input.Split(delimiter,7).ToList<string>();
 
-            //Eine MSG sollte aus 6 Teilen bestehen
-			if (parts.Count == 7)
-			{
-				Type = parts[0];
-				//SecTime = Convert.ToDouble(parts[1]);
-				SecTime = Convert.ToInt32(parts[1]);
-				Version = parts[2];
-				Status = parts[3];
-				Nickname = parts[4];
-				Body = parts[6];
-			}
-			else
-			{
-				Type = "ERR";
-				TimeStamp = DateTime.Now;
-				Version = "0.0.1.0";
-				Status = "";
-				Nickname = "";
-				Body = "Wrong Format: " + input;
-			}
+                //Eine MSG sollte aus 6 Teilen bestehen
+                if (parts.Count == 7)
+                {
+                    Type = parts[0];
+                    //SecTime = Convert.ToDouble(parts[1]);
+                    SecTime = Convert.ToInt32(parts[1]);
+                    Version = parts[2];
+                    Status = parts[3];
+                    Nickname = parts[4];
+                    Body = parts[6];
+                }
+                else
+                {
+                    Type = "ERR";
+                    TimeStamp = DateTime.Now;
+                    Version = "0.0.1.0";
+                    Status = "";
+                    Nickname = "";
+                    Body = "Wrong Format: " + input;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Fehlerhafte Nachricht: " + input);
+                Type = "ERR";
+                TimeStamp = DateTime.Now;
+                Version = "0.0.1.0";
+                Status = "";
+                Nickname = "";
+                Body = "Wrong Format: " + input;
+            }
+
 		}
 
 		public void ReadMessage(byte[] input)

@@ -21,17 +21,17 @@ namespace ChatApp
 		/// Delegat zur Benachrichtigung, dass sich in der Teilnehmerliste etwas geändert hat
 		/// </summary>
 		/// <param name="newList">Neue Teilnehmerliste</param>
-		public delegate void DelegateUserListChanged(List<string> newList);
+		public delegate void DelegateUserListChanged(List<ListUser> newList);
 
 		public DelegateUserListChanged DelUserListChanged;
 
         //Über UDP gefundene Benutzer
-		private Dictionary<string, IPAddress> users;
+		private Dictionary<IPAddress , string> users;
 
         //Offene TCP-Verbindungen
 		private Dictionary<string, ClientControl> connections;
 
-		public Dictionary<string, IPAddress> Users { get { return users; } }
+		public Dictionary<IPAddress, string> Users { get { return users; } }
 
 		public Dictionary<string, ClientControl> Connections { get { return connections; } }
 
@@ -48,7 +48,7 @@ namespace ChatApp
         /// <param name="port">Port des Clients</param>
 		public UserHandler(string nickname, int port)
 		{
-			users = new Dictionary<string, IPAddress>();
+			users = new Dictionary<IPAddress , string>();
 
 			connections = new Dictionary<string, ClientControl>();
 
@@ -89,15 +89,20 @@ namespace ChatApp
 		/// <returns></returns>
 		public bool AddNewUser(string name, IPAddress address)
 		{
-			if (!users.ContainsKey(name))
+			if (!users.ContainsKey(address))
 			{
-				users.Add(name, address);
+				users.Add(address, name);
 				//addresses.Add(address, name);
 
 				Console.WriteLine("Benutzer: " + name + " wurde hinzugefügt");
 
 				//Informiere, dass sich die Liste geändert hat
-                DelUserListChanged(users.Keys.ToList<String>());
+                List<ListUser> newList  = new List<ListUser>();
+                foreach(IPAddress key in users.Keys)
+                {
+                    newList.Add(new ListUser(users[key], key));
+                }
+                DelUserListChanged(newList);
                 //List<string> result = new List<string>();
                 //foreach(string nick in users.Keys.ToList<string>())
                 //{
@@ -115,12 +120,17 @@ namespace ChatApp
 		/// </summary>
 		/// <param name="name">Name des zu löschenden Users</param>
 		/// <returns></returns>
-		public bool DeleteUser(string name)
+		public bool DeleteUser(IPAddress address)
 		{
-			if(users.ContainsKey(name))
+			if(users.ContainsKey(address))
 			{
-				users.Remove(name);
-				DelUserListChanged(users.Keys.ToList<String>());
+				users.Remove(address);
+                List<ListUser> newList = new List<ListUser>();
+                foreach (IPAddress key in users.Keys)
+                {
+                    newList.Add(new ListUser(users[key], key));
+                }
+                DelUserListChanged(newList);
 				return true;
 			}
 			return false;
@@ -131,19 +141,19 @@ namespace ChatApp
 		/// </summary>
 		/// <param name="clientNickName">Client, zu dem verbunden werden soll</param>
 		/// <returns>Verbindung erfolgreich</returns>
-		public bool OpenConnection(string clientNickName)
+		public bool OpenConnection(IPAddress address)
 		{
-			if (users.ContainsKey(clientNickName))
-			{
-				if (!connections.ContainsKey(nickname))
-				{
-					connections.Add(clientNickName, new ClientControl(clientNickName, users[clientNickName], port));
+            if (users.ContainsKey(address))
+            {
+                if (!connections.ContainsKey(users[address]))
+                {
+                    connections.Add(users[address], new ClientControl(users[address], address, port));
 
-					connections[clientNickName].Connect();
-					return true;
-				}
-			}
-			return false;
+                    connections[users[address]].Connect();
+                    return true;
+                }
+            }
+            return false;
 		}
 
 		/// <summary>
@@ -153,7 +163,8 @@ namespace ChatApp
 		/// <param name="client">Neuer Client</param>
 		public void AcceptConnection(TcpClient client)
 		{
-			ClientControl newClient = new ClientControl(client);
+            IPAddress address = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address;
+			ClientControl newClient = new ClientControl(users[address],client);
 			if (newClient.Connected)
 			{
 				if(!connections.ContainsKey(newClient.NickName))

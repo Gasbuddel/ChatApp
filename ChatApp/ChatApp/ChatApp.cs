@@ -24,7 +24,8 @@ namespace ChatApp
         int port;
         string nickName;
 
-		delegate void userListChanged_Callback(List<string> newList);
+
+		delegate void userListChanged_Callback(List<ListUser> newList);
 
 		public ChatApp()
 		{
@@ -75,7 +76,7 @@ namespace ChatApp
         /// Aktualisiere die ClientListe
         /// </summary>
         /// <param name="newList">Neue Liste von Clients</param>
-		private void aktualisiereListe(List<string> newList)
+		private void aktualisiereListe(List<ListUser> newList)
 		{
 			if (InvokeRequired)
 			{
@@ -105,8 +106,11 @@ namespace ChatApp
         //TCP-Verbindung mit Benutzer aufbauen
 		private void btn_Connect_Click(object sender, EventArgs e)
 		{
-			if(lb_Clients.SelectedIndex != -1)
-				userHandle.OpenConnection(lb_Clients.SelectedItem.ToString());
+            if (lb_Clients.SelectedIndex != -1)
+            {
+                ListUser temp = (ListUser)lb_Clients.SelectedItem;
+                userHandle.OpenConnection(temp.Address);
+            }
 		}
 
         //Einen SOL senden

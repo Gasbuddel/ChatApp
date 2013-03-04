@@ -16,7 +16,7 @@ namespace ChatApp
 	{
 		public delegate void DelegateUserJoined(Message msg, IPAddress address);
 
-		public delegate bool DelegateUserLeft(string nickName);
+		public delegate bool DelegateUserLeft(IPAddress address);
 
 		public DelegateUserJoined DelUserJoined;
 
@@ -37,7 +37,7 @@ namespace ChatApp
 					break;
 				case "SOD":
 					Console.WriteLine(msg.Nickname + " hat uns verlassen");
-					DelUserLeft(msg.Nickname);
+					DelUserLeft(source);
 					break;
 				case "ACK":
 					Console.WriteLine(msg.Nickname + " hat uns geantwortet");
