@@ -44,7 +44,10 @@ namespace ChatApp
 
                 DelSendMessage(msg);
 
+                tb_Receive.Text += "Ich: " + tb_Send.Text + Environment.NewLine; 
+
 				tb_Send.Text = "";
+
 			}
 		}
 
@@ -62,7 +65,7 @@ namespace ChatApp
 			else
 			{
 				this.Text = "Konversation mit " + msg.Nickname;
-				tb_Receive.Text += msg.TimeStamp + " " +msg.Nickname + ": " + msg.Body;
+				tb_Receive.Text += msg.TimeStamp + " " +msg.Nickname + ": " + msg.Body + Environment.NewLine;
 			}
 		}
 
@@ -74,7 +77,7 @@ namespace ChatApp
         {
             if (message != "")
             {
-                tb_Receive.Text += "System: " + message;
+                tb_Receive.Text += "System: " + message + Environment.NewLine;
             }
         }
 

@@ -128,6 +128,10 @@ namespace ChatApp
 
                     return true;
                 }
+
+                thr_ReceiveMessages.Start();
+
+                return true;
             }
             catch (Exception e)
             {
@@ -165,9 +169,10 @@ namespace ChatApp
                     Console.WriteLine("Verbindung zu Client unterbrochen");
                 }
             }
-
-            writer.Close();
-            reader.Close();
+            if(writer != null)
+                writer.Close();
+            if(reader != null)
+                reader.Close();
             connection.Close();
 
             DelConnectionClosed();

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace ChatApp
 {
@@ -67,6 +69,14 @@ namespace ChatApp
             clientWindow.Text = "Chat mit " + nickName;
 
             clientWindow.DelSendMessage += SendMessage;
+
+            DelClientDisconnected += delegate() { };
+
+            //Aboniere die Delegaten
+            client.DelClientMessageReceived += postMessage;
+            client.DelConnectionClosed += ConnectionClosed;
+            clientWindow.DelSendMessage += SendMessage;
+            clientWindow.DelWindowClosed += CloseConnection;
         }
 
         /// <summary>
@@ -80,9 +90,16 @@ namespace ChatApp
 
                 if (client.Connected)
                 {
-                    clientWindow.Show();
                     clientWindow.SystemMessage("Client verbunden");
+                    clientWindow.ShowDialog();
                 }
+            }
+            else
+            {
+                client.Connect();
+
+                clientWindow.SystemMessage("Client verbunden");
+                clientWindow.ShowDialog();
             }
         }
 
