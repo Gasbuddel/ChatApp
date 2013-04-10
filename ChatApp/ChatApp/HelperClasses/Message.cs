@@ -8,6 +8,11 @@ using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
+	/// <summary>
+	/// Diese Klasse verwaltet alle Informationen, die in einem Protokollpaket vorkommen.
+	/// Ein ankommendes Paket kann eingelesen und in seine Bestandteile geteilt werden.
+	/// Es kann ein Protokollpaket als String erstellt werden.
+	/// </summary>
 	public class Message
 	{
         //Variablen
@@ -56,12 +61,6 @@ namespace ChatApp
                 time = UnixTimeFormater.DateTimeToUnix(value);
             }
         }
-
-		//public double SecTime 
-		//{
-		//	get { return time; }
-		//	set { time = value; } 
-		//}
 
 		public int SecTime
 		{
@@ -145,7 +144,6 @@ namespace ChatApp
                 if (parts.Count == 7)
                 {
                     Type = parts[0];
-                    //SecTime = Convert.ToDouble(parts[1]);
                     SecTime = Convert.ToInt32(parts[1]);
                     Version = parts[2];
                     Status = parts[3];

@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 namespace ChatApp.HelperClasses
 {
 
-    //Unelegant, muss noch wegrationalisiert werden!
+    /// <summary>
+	/// Unelegant, muss noch wegrationalisiert werden!
+	/// Hält allgemeine Informationen über den verwendeten Port und den gesetzten Nickname des Benutzers fest.
+    /// </summary>
     public static class ClientInformation
     {
         static int port;

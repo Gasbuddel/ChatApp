@@ -14,6 +14,7 @@ namespace ChatApp
 {
 	/// <summary>
 	/// Verwaltet gefundene Chatteilnehmer und deren Verbindungen
+	/// Dient ebenso dazu, mit Chatpartnern TCP-Verbindungen aufzubauen und diese in einer Liste zu speichern
 	/// </summary>
 	class UserHandler
 	{

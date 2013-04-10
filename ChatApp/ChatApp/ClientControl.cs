@@ -12,9 +12,11 @@ namespace ChatApp
     /// <summary>
     /// Diese Klasse dient als Controller für TCP-Verbindungen zu einzelnen Chatpartnern
     /// Jede Kommunikation besteht aus diesem Controller, einem Client Objekt und einer Chatform
+	/// Hier wird das MVC Prinzip angewendet, um die Client Klasse von der Form zu trennen.
     /// </summary>
     class ClientControl
     {
+	
 		public delegate void DelegateClientDisconnected();
 
 		public DelegateClientDisconnected DelClientDisconnected;

@@ -10,6 +10,11 @@ namespace ChatApp
 	{
 		/// <summary>
 		/// Der Haupteinstiegspunkt für die Anwendung.
+		/// !!!INFO!!!
+		/// Ich habe bei der Hauptform bewusst auf MVC verzichtet, da ich an dieser Stelle durch den Einsatz diese Models
+		/// keinen nennenswerten Vorteil erhalte und auf einige Probleme mit meinen Threads stoße. 
+		/// Daher erfolgt der Programmaufbau auf der Form "ChatApp".
+		/// MVC kommt bei den Clientfenstern allerdings zum Einsatz!
 		/// </summary>
 		[STAThread]
 		static void Main()

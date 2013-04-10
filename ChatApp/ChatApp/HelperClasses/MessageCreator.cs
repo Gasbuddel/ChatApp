@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChatApp.HelperClasses
 {
+	/// <summary>
+	/// Eine Hilfsklasse, die bestimmte Messagetypen vorbereitet für leichtere Bedienung
+	/// </summary>
     public static class MessageCreator
     {
 

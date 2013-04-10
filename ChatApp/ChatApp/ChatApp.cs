@@ -13,6 +13,14 @@ using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
+	/// <summary>
+	/// Diese Form stellt die Basis für den Chat.
+	/// Hier werden alle Kommunikationsklassen und Listener initialisiert und der Nickname des Benutzers gesetzt.
+	/// Mit Debugbuttons kann man die Broadcastfunktionalitäten testen.
+	/// In einer Listbox werden alle über UDP gefundenen Benutzer angezeigt.
+	/// Auf MVC wurde verzichtet. Die Klassen, die hier verwendet werden, können alle unabhängig von der Form arbeiten. 
+	/// 
+	/// </summary>
 	public partial class ChatApp : Form
 	{
         UDPHandler udpHandle;
@@ -32,7 +40,9 @@ namespace ChatApp
 			InitializeComponent();
 		}
 
-        //Initialisiere den Chatclient und starte die Listener
+        /// <summary>
+		/// Initialisiere den Chatclient und starte die Listener
+        /// </summary>
         private void InitializeClient()
         {
             //Globale Clientinformationen initialisieren
@@ -90,7 +100,7 @@ namespace ChatApp
 			}
 		}
 
-        //Benutzer anmelden
+		// Benutzer anmelden
         private void btn_Login_Click(object sender, EventArgs e)
         {
             if (tb_NickName.Text != "" && !tb_NickName.Text.Contains('|'))
@@ -103,7 +113,7 @@ namespace ChatApp
             }
         }
 
-        //TCP-Verbindung mit Benutzer aufbauen
+        //TCP-Verbindung mit dem ausgewählten Benutzer aufbauen
 		private void btn_Connect_Click(object sender, EventArgs e)
 		{
             if (lb_Clients.SelectedIndex != -1)
@@ -126,7 +136,7 @@ namespace ChatApp
         }
 
 
-        //Ein SOL senden
+        //Ein SOD senden
         private void btn_SendBye_Click(object sender, EventArgs e)
         {
             udpHandle.SendBroadCast(MessageCreator.CreateSOD(nickName));
@@ -144,6 +154,7 @@ namespace ChatApp
 			if (nickName != null)
 				udpHandle.SendBroadCast(MessageCreator.CreateSOD(nickName));
 		}
+
 
 		private void lb_Clients_DoubleClick(object sender, EventArgs e)
 		{

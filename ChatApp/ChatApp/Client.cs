@@ -11,15 +11,22 @@ using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
+	/// <summary>
+	/// Diese Klasse hält die Verbindung zu einem TCP-Client.
+	/// Sie empfängt TCP-Nachrichten und kann Nachrichten senden.
+	/// Empfangene TCP-Nachrichten werden über einen Delegaten weitergereicht.
+	/// Die Kommunikation erfolgt über Streamwriter und Streamreader. Mit diesen Klassen kann man getrennte Pakete schicken,
+	/// was es mir ermöglicht, Protokollgerechte, getrennte Pakete zu schicken, ohne dass ich den Networkstream lesen muss und
+	/// diesen aufteilen muss.
+	/// </summary>
     public class Client
     {
-
+		//Nachricht empfangen
 		public delegate void DelegateClientMessageReceived(Message msg);
-
 		public DelegateClientMessageReceived DelClientMessageReceived;
 
+		//Verbindung zum Client geschlossen
         public delegate void DelegateConnectionClosed();
-
         public DelegateConnectionClosed DelConnectionClosed;
 
 		TcpClient connection;
@@ -33,7 +40,7 @@ namespace ChatApp
 		int port;
 
         /// <summary>
-        /// Besteht eine aktive TCP Verbindung
+        /// Besteht eine aktive TCP Verbindung?
         /// </summary>
 		public bool Connected 
 		{
@@ -47,8 +54,6 @@ namespace ChatApp
 
 		public IPAddress TargetAddress { get { return targetAddress; } }
 		public string NickName { get { return nickName; } }
-
-		//ChatWindow chWindow;
 
 		/// <summary>
 		/// Erstellt einen neuen Client und baut die TCP-Verbindung mit den Angaben auf
@@ -79,7 +84,6 @@ namespace ChatApp
 
 		/// <summary>
 		/// Stellt eine Verbindung mit einem TCP-Client her.
-		/// Dabei wird versucht mittels der gesendeten Informationen, einen Benutzernamen ausfindig zu machen
 		/// </summary>
 		/// <param name="client">Zielclient</param>
 		public Client(string nickName ,TcpClient client)
@@ -183,20 +187,20 @@ namespace ChatApp
         }
 
 		/// <summary>
-		/// Nimmt eine Nachricht auf, um sicherzustellen, dass es sich um eine Protokollkonorme Kommunikation
+		/// Nimmt eine Nachricht auf, um sicherzustellen, dass es sich um eine Protokollkonorme Kommunikation handelt
 		/// </summary>
 		/// <param name="client">Zielclient</param>
 		/// <returns>Empfangene Nachricht</returns>
-		private Message TryReceiving(TcpClient client)
-		{
-			StreamReader reader = new StreamReader(client.GetStream());
+		//private Message TryReceiving(TcpClient client)
+		//{
+		//	StreamReader reader = new StreamReader(client.GetStream());
 
-			string receivedLine = reader.ReadLine();
+		//	string receivedLine = reader.ReadLine();
 
-			Message receivedMessage = new Message(receivedLine);
+		//	Message receivedMessage = new Message(receivedLine);
 
-			return receivedMessage;
-		}
+		//	return receivedMessage;
+		//}
 
 
 

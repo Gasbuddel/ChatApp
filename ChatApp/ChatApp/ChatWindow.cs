@@ -11,6 +11,9 @@ using ChatApp.HelperClasses;
 
 namespace ChatApp
 {
+	/// <summary>
+	/// Fenster für die Anzeige eines Chats mit einem Chatpartner
+	/// </summary>
 	public partial class ChatWindow : Form
 	{
 
@@ -91,6 +94,7 @@ namespace ChatApp
             }
         }
 
+		//Wenn die Form geschlossen wird, wird darüber informiert.
 		private void ChatWindow_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			DelWindowClosed();
