@@ -9,6 +9,10 @@ using System.Threading;
 
 namespace ChatApp
 {
+    /// <summary>
+    /// Diese Klasse dient als Controller für TCP-Verbindungen zu einzelnen Chatpartnern
+    /// Jede Kommunikation besteht aus diesem Controller, einem Client Objekt und einer Chatform
+    /// </summary>
     class ClientControl
     {
 		public delegate void DelegateClientDisconnected();
@@ -80,7 +84,7 @@ namespace ChatApp
         }
 
         /// <summary>
-        /// Verbinde den Client
+        /// Verbinde den Client und starte den Listeningthread
         /// </summary>
         public void Connect()
         {

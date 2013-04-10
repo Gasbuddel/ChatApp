@@ -72,7 +72,8 @@ namespace ChatApp
 				AddNewUser(msg.Nickname, address);
 
 				//ACK zurücksenden
-				udpHandle.SendMessage(MessageCreator.CreateACK(nickname), address);
+                udpHandle.SendMessage(MessageCreator.CreateACK(nickname), address);
+
 			}
 			//Im Falle ACK nur hinzufügen
 			else if (msg.Type == "ACK")
@@ -103,12 +104,6 @@ namespace ChatApp
                     newList.Add(new ListUser(users[key], key));
                 }
                 DelUserListChanged(newList);
-                //List<string> result = new List<string>();
-                //foreach(string nick in users.Keys.ToList<string>())
-                //{
-                //    result.Add(nick + " " + users[nick]);
-                //}
-                //DelUserListChanged(result);
 				return true;
 			}
 			Console.WriteLine("Benutzer: " + name + " ist schon vorhanden.");

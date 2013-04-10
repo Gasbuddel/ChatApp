@@ -16,6 +16,8 @@ namespace ChatApp
 
 		delegate void AktualisiereNachrichtenCallback(Message msg);
 
+        delegate void SystemMessageCallback(string msg);
+
 		public delegate void DelegateWindowClosed();
 
         public delegate void DelegateSendMessage(Message msg);
@@ -77,7 +79,15 @@ namespace ChatApp
         {
             if (message != "")
             {
-                tb_Receive.Text += "System: " + message + Environment.NewLine;
+                if (InvokeRequired)
+                {
+                    SystemMessageCallback sysMesCallback = new SystemMessageCallback(SystemMessage);
+                    this.Invoke(sysMesCallback, new object[] { message });
+                }
+                else
+                {
+                    tb_Receive.Text += "System: " + message + Environment.NewLine;
+                }
             }
         }
 

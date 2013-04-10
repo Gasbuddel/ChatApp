@@ -131,10 +131,6 @@ namespace ChatApp
 			{
 				Console.WriteLine(e.ToString());
 			}
-            //finally
-            //{
-            //    bcClient.Close();
-            //}
 		}
 
 

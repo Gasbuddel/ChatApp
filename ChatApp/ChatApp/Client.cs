@@ -32,8 +32,9 @@ namespace ChatApp
 
 		int port;
 
-		bool connected = false;
-
+        /// <summary>
+        /// Besteht eine aktive TCP Verbindung
+        /// </summary>
 		public bool Connected 
 		{
 			get { return connection.Connected; } 
@@ -72,7 +73,8 @@ namespace ChatApp
 
             DelConnectionClosed += delegate() { };
 
-			connected = true;
+            Connect();
+
 		}
 
 		/// <summary>
@@ -100,13 +102,10 @@ namespace ChatApp
 
                 DelConnectionClosed += delegate() { };
 
-				connected = true;
-
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
-				this.connected = false;
 			}
 		}
 
@@ -120,7 +119,7 @@ namespace ChatApp
             {
                 //TODO!!
                 //connection.BeginConnect(targetAddress, port);
-                if (!connection.Connected)
+                if (!Connected)
                 {
                     connection.Connect(targetAddress, port);
 
@@ -142,40 +141,45 @@ namespace ChatApp
 
                 return false;
             }
-            return false;
 
         }
 
         /// <summary>
-        /// Verbindung aufrecht erhalten
+        /// Verbindung aufrecht erhalten und auf Nachrichten horchen
         /// </summary>
         private void KeepListening()
         {
-            string message;
-
-            reader = new StreamReader(connection.GetStream());
-
-            while (Connected)
+            if (Connected)
             {
-                try
-                {
-                    message = reader.ReadLine();
-                    DelClientMessageReceived(new Message(message));
+                string message;
 
-                    Console.WriteLine("Message from " + nickName + ": " + message);
-                }
-                catch (IOException ex)
+                reader = new StreamReader(connection.GetStream(),Encoding.Unicode);
+
+                writer = new StreamWriter(connection.GetStream(), Encoding.Unicode);
+                writer.AutoFlush = true;
+
+                while (Connected)
                 {
-                    Console.WriteLine("Verbindung zu Client unterbrochen");
+                    try
+                    {
+                        message = reader.ReadLine();
+                        DelClientMessageReceived(new Message(message));
+
+                        Console.WriteLine("Message from " + nickName + ": " + message);
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine("Verbindung zu Client unterbrochen");
+                    }
                 }
+                if (writer != null)
+                    writer.Close();
+                if (reader != null)
+                    reader.Close();
+                connection.Close();
+
+                DelConnectionClosed();
             }
-            if(writer != null)
-                writer.Close();
-            if(reader != null)
-                reader.Close();
-            connection.Close();
-
-            DelConnectionClosed();
         }
 
 		/// <summary>
@@ -201,9 +205,9 @@ namespace ChatApp
 		/// </summary>
 		public void CloseConnection()
 		{
-			if (connected)
+			if (Connected)
 			{
-				connected = false;
+                connection.Close();
                 DelConnectionClosed();
 			}
 		}
@@ -211,16 +215,12 @@ namespace ChatApp
 		/// <summary>
 		/// Sende eine Nachricht an den Clienten
 		/// </summary>
-		/// <param name="msg"></param>
+		/// <param name="msg">Nachricht</param>
 		public void SendMessage(Message msg)
 		{
 			if (connection.Connected)
 			{
-				writer = new StreamWriter(connection.GetStream(),Encoding.Unicode);
-
 				writer.WriteLine(msg.ToString());
-				writer.Flush();
-
 			}
 		}     
     }
